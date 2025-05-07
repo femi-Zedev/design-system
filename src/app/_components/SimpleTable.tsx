@@ -14,7 +14,7 @@ export default function SimpleTable<TData, TValue>({
 }: SimpleTableProps<TData, TValue>) {
   const table = useReactTable({ data, columns, getCoreRowModel: getCoreRowModel() });
   return (
-    <div className='rounded-xl bg-white border border-gray-200 w-full'>
+    <div className='relative overflow-hidden rounded-xl bg-white border border-gray-200 w-full'>
       <Table>
         <TableBody>
           {table.getRowModel().rows?.length ? (

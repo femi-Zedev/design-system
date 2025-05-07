@@ -1,5 +1,7 @@
-import "./globals.css";
+import '@mantine/core/styles.css';
+import '@mantine/code-highlight/styles.css';
 import "./mantine-styles.css";
+import "./globals.css";
 import { Inter } from "next/font/google";
 import RootLayoutProvider from "@/providers/RootLayoutProvider";
 
