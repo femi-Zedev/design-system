@@ -1,0 +1,199 @@
+---
+title: 'SimpleTable'
+description: 'A lightweight table component for displaying simple data without headers'
+---
+
+# SimpleTable
+
+The `SimpleTable` component is a lightweight table implementation built on top of TanStack Table (react-table v8). It's designed for displaying simple data without headers, making it perfect for profile information, settings, or any data that benefits from a clean, minimal presentation.
+
+## Installation
+
+The SimpleTable component is part of our design system and is available in the `@/app/_components` directory.
+
+```tsx
+import SimpleTable from '@/app/_components/SimpleTable';
+```
+
+## Basic Usage
+
+Here's a basic example of how to use the SimpleTable component:
+
+```tsx
+import SimpleTable from '@/app/_components/SimpleTable';
+import { ColumnDef } from '@tanstack/react-table';
+
+// Define your data type
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+};
+
+// Sample data
+const users = [
+  { id: '1', name: 'John Doe', email: 'john@example.com', role: 'Admin' },
+  { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
+  { id: '3', name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor' },
+];
+
+// Define columns
+const columns: ColumnDef<User, any>[] = [
+  {
+    accessorKey: 'name',
+    header: 'Name',
+    cell: info => <div className="font-medium">{info.getValue()}</div>,
+  },
+  {
+    accessorKey: 'email',
+    header: 'Email',
+  },
+  {
+    accessorKey: 'role',
+    header: 'Role',
+  },
+];
+
+// Use the SimpleTable component
+export default function MyComponent() {
+  return <SimpleTable data={users} columns={columns} />;
+}
+```
+
+## Custom Cell Rendering
+
+You can customize how each cell is rendered by providing a custom cell renderer function in your column definitions. This allows for rich formatting, conditional styling, and interactive elements within your table cells.
+
+```tsx
+import SimpleTable from '@/app/_components/SimpleTable';
+import { ColumnDef } from '@tanstack/react-table';
+
+type Transaction = {
+  id: string;
+  amount: number;
+  date: string;
+  status: string;
+};
+
+const transactions = [
+  { id: '1', amount: 100.00, date: '2025-05-01', status: 'Completed' },
+  { id: '2', amount: 75.50, date: '2025-05-03', status: 'Pending' },
+  { id: '3', amount: 250.00, date: '2025-05-05', status: 'Completed' },
+  { id: '4', amount: 30.25, date: '2025-05-07', status: 'Failed' },
+];
+
+const columns: ColumnDef<Transaction, any>[] = [
+  {
+    accessorKey: 'date',
+    header: 'Date',
+  },
+  {
+    accessorKey: 'amount',
+    header: 'Amount',
+    cell: info => <div className="font-medium">${info.getValue()}</div>,
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: info => {
+      const status = info.getValue() as string;
+      return (
+        <div
+          className={`px-2 py-1 text-xs rounded-full text-center w-24 ${
+            status === 'Completed'
+              ? 'bg-green-100 text-green-800'
+              : status === 'Pending'
+              ? 'bg-yellow-100 text-yellow-800'
+              : 'bg-red-100 text-red-800'
+          }`}
+        >
+          {status}
+        </div>
+      );
+    },
+  },
+];
+
+export default function TransactionsComponent() {
+  return <SimpleTable data={transactions} columns={columns} />;
+}
+```
+
+## API Reference
+
+### Props
+
+| Prop | Type | Description |
+| ---- | ---- | ----------- |
+| `data` | `TData[]` | An array of data objects to be displayed in the table |
+| `columns` | `ColumnDef<TData, TValue>[]` | An array of column definitions following the TanStack Table API |
+
+### Column Definition
+
+Column definitions follow the TanStack Table API. The most common properties include:
+
+| Property | Type | Description |
+| -------- | ---- | ----------- |
+| `accessorKey` | `string` | The key to access the data from your data object |
+| `header` | `string` | The header text (not displayed in SimpleTable) |
+| `cell` | `function` | A function to customize the rendering of the cell |
+
+## Implementation Details
+
+The SimpleTable component is implemented as follows:
+
+```tsx
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import React, { useState } from 'react';
+
+interface SimpleTableProps<TData, TValue> {
+  data: TData[];
+  columns: ColumnDef<TData, TValue>[];
+}
+
+export default function SimpleTable<TData, TValue>({
+  data,
+  columns,
+}: SimpleTableProps<TData, TValue>) {
+  const table = useReactTable({ data, columns, getCoreRowModel: getCoreRowModel() });
+  return (
+    <div className='rounded-xl bg-white border border-gray-200 w-full'>
+      <Table>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map(row => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map(cell => (
+                  <TableCell
+                    key={cell.id}
+                    className='text-gray-700'
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <div className='flex items-center justify-center w-full'>No data found</div>
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+```
+
+## Best Practices
+
+- Use SimpleTable for data that benefits from a clean, minimal presentation
+- Customize cell rendering to enhance readability and provide visual cues
+- Keep the number of columns reasonable to maintain the clean aesthetic
+- Use consistent styling for similar data types across your application
+
+## Accessibility
+
+- The SimpleTable component uses semantic HTML table elements for proper accessibility
+- Custom cell renderers should maintain accessibility by using appropriate ARIA attributes when needed
+- Ensure sufficient color contrast for text and background colors in custom cell renderers

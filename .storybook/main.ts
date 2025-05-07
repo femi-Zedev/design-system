@@ -3,7 +3,6 @@ import path from "path";
 
 const config: StorybookConfig = {
   "stories": [
-    "../src/**/*.mdx",
     "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"
   ],
   "addons": [
@@ -17,7 +16,7 @@ const config: StorybookConfig = {
     "options": {}
   },
   "staticDirs": [
-    "..\\public"
+    "../public"
   ],
   "viteFinal": async (config) => {
     // Add path aliases to match your tsconfig
@@ -25,9 +24,16 @@ const config: StorybookConfig = {
       config.resolve.alias = {
         ...config.resolve.alias,
         '@': path.resolve(__dirname, '../src'),
+        '@/components': path.resolve(__dirname, '../src/components'),
+        '@/lib': path.resolve(__dirname, '../src/lib'),
+        '@/app': path.resolve(__dirname, '../src/app'),
       };
     }
     return config;
+  },
+  // Configure docs mode
+  "docs": {
+    "autodocs": "tag"
   }
 };
 export default config;

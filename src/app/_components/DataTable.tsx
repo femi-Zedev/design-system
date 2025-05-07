@@ -27,10 +27,6 @@ import { TableSkeleton } from '@/components/ui/table-skeleton';
 
 interface DataTableProps<TData, TValue> {
   isSelectable?: boolean;
-  title?: string;
-  titleClassName?: string;
-  leftSection?: React.ReactNode;
-  rightSection?: React.ReactNode;
   columns: ColumnDef<TData, TValue>[];
   columnVisibility?: VisibilityState;
   data: TData[];
@@ -55,18 +51,12 @@ export interface ExtendedCellContext<TData, TValue> extends CellContext<TData, T
 }
 
 export function DataTable<TData, TValue>({
-  title,
-  titleClassName,
   columns,
   data,
   columnVisibility,
-  leftSection,
-  rightSection,
   className,
   hideTable = false,
-  hideHeader = false,
   hideTableHeader = false,
-  dataCount,
   innerContent,
   headerClassName,
   footerClassName,
